@@ -13,6 +13,6 @@ typedef enum logic [3:0] {
     DATA_7,
     PARITY_BIT,
     STOP_BIT
-}uart_rx_state_e;
+} uart_rx_state_e;
 
 endpackage

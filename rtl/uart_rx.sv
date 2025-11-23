@@ -120,16 +120,15 @@ module uart_rx
   always_ff @(posedge clk_i or negedge arst_ni) begin
     if (!arst_ni) begin
       parity_bit_sampled <= 1'b0;
-      parity_ok <= 1'b0;
+      parity_ok <= 1'b1; // treat as OK on reset
     end else begin
-      if (edge_found && state == PARITY_BIT) begin
+      if (parity_en_i && edge_found && state == PARITY_BIT) begin
         parity_bit_sampled <= rx_i;
         // parity_type_i: 0 = even, 1 = odd
         logic data_parity = ^data_shift; // XOR of all data bits
         parity_ok <= parity_type_i ? (rx_i == ~data_parity) : (rx_i == data_parity);
-      end else if (!parity_en_i) begin
-        parity_ok <= 1'b1; // treat as OK when disabled
       end
+      // No else clause: do not update parity_ok when parity is disabled
     end
   end
 

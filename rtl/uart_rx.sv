@@ -75,8 +75,7 @@ module uart_rx
     if (state == IDLE) begin
       edge_found = start_edge; // initiate on start edge
     end else begin
-      int limit = (state == START_BIT) ? HalfBitTicks : BitTicks;
-      edge_found = (tick_cnt == limit - 1);
+      edge_found = (tick_cnt == ((state == START_BIT) ? HalfBitTicks : BitTicks) - 1);
     end
   end
 

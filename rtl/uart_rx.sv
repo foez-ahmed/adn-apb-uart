@@ -1,4 +1,4 @@
-module uart_rx
+ module uart_rx
   import uart_rx_pkg::*;
 (
   input  logic       arst_ni,

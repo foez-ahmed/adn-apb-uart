@@ -31,6 +31,10 @@
   logic [7:0] data_shift;
   logic parity_bit_sampled;
   logic parity_ok;
+  logic data_parity;
+
+  // Parity calculation (XOR of all data bits)
+  assign data_parity = ^data_shift;
 
   // Output assignments
   assign data_o = data_shift;
@@ -124,7 +128,6 @@
       if (parity_en_i && edge_found && state == PARITY_BIT) begin
         parity_bit_sampled <= rx_i;
         // parity_type_i: 0 = even, 1 = odd
-        logic data_parity = ^data_shift; // XOR of all data bits
         parity_ok <= parity_type_i ? (rx_i == ~data_parity) : (rx_i == data_parity);
       end
       // No else clause: do not update parity_ok when parity is disabled

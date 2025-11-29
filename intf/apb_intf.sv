@@ -51,7 +51,6 @@ interface apb_intf #(
     // Deassert signals
     psel    <= 1'b0;
     penable <= 1'b0;
-
   endtask
 
   task automatic reset();

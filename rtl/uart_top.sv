@@ -157,6 +157,7 @@ module uart_top
   ////////////////////////////////////////////////
   // TX FIFO
   ////////////////////////////////////////////////
+
   cdc_fifo #(
       .ELEM_WIDTH(8),
       .FIFO_SIZE (8)
@@ -177,11 +178,28 @@ module uart_top
   // RX FIFO
   ////////////////////////////////////////////////
 
-  // TODO FARHAN
+  cdc_fifo #(
+      .ELEM_WIDTH(8),
+      .FIFO_SIZE (2)
+  ) u_rx_fifo (
+      .arst_ni(arst_ni),
+      .elem_in_i(uart_rx_data_reg),
+      .elem_in_clk_i(divided_clk_n),
+      .elem_in_valid_i(uart_rx_data_valid),
+      .elem_in_ready_o(uart_rx_data_ready),
+      .elem_in_count_o(),
+      .elem_out_o(regif_tx_data_reg),
+      .elem_out_clk_i(clk_i),
+      .elem_out_valid_o(uart_rx_data_valid),
+      .elem_out_ready_i(regif_rx_data_ready),
+      .elem_out_count_o(rx_fifo_count_reg)
+  );
+
 
   ////////////////////////////////////////////////
   // CLK DIV n
   ////////////////////////////////////////////////
+
   clk_div #(
       .DIV_WIDTH(32)
   ) u_clk_div (
@@ -196,7 +214,15 @@ module uart_top
   // CLK DIV 8
   ////////////////////////////////////////////////
 
-  // TODO FARHAN
+  clk_div #(
+      .DIV_WIDTH(4)
+  ) u_clk_div_8n (
+      .arst_ni(arst_ni),
+      .clk_i  (divided_clk_n),
+      .div_i  (8),
+      .clk_o  (divided_clk_8n)
+  );
+
 
   ////////////////////////////////////////////////
   // UART TX
@@ -219,7 +245,18 @@ module uart_top
   // UART RX
   ////////////////////////////////////////////////
 
-  // TODO FARHAN
+  uart_rx u_rx (
+      .arst_ni(arst_ni),
+      .clk_i  (clk_i),
+
+      .rx_i(rx_i),
+
+      .parity_en_i  (cfg_reg.PARITY_EN),
+      .parity_type_i(cfg_reg.PARITY_TYPE),
+
+      .data_o(uart_rx_data_reg),
+      .data_valid_o(uart_rx_data_valid)
+  );
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Interrupt Signals

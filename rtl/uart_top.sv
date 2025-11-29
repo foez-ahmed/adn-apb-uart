@@ -1,4 +1,6 @@
-module uart_top #(
+module uart_top
+  import apb_uart_pkg::*;
+#(
     parameter int ADDR_WIDTH = 5,
     parameter int DATA_WIDTH = 32
 ) (
@@ -25,7 +27,13 @@ module uart_top #(
 
 );
 
-  import apb_uart_pkg::*;
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Signals
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  ////////////////////////////////////////////////
+  // APB-MEMIF
+  ////////////////////////////////////////////////
 
   logic                                    mreq;
   logic               [    ADDR_WIDTH-1:0] maddr;
@@ -36,9 +44,17 @@ module uart_top #(
   logic               [    DATA_WIDTH-1:0] mrdata;
   logic                                    mresp;
 
+  ////////////////////////////////////////////////
+  // MEMIF-REGIF
+  ////////////////////////////////////////////////
+
   ctrl_reg_t                               ctrl_reg;
   clk_div_reg_t                            clk_div_reg;
   cfg_reg_t                                cfg_reg;
+
+  ////////////////////////////////////////////////
+  // REGIF-FIFO
+  ////////////////////////////////////////////////
 
   tx_fifo_count_reg_t                      tx_fifo_count_reg;
   rx_fifo_count_reg_t                      rx_fifo_count_reg;
@@ -51,6 +67,10 @@ module uart_top #(
   logic                                    regif_rx_data_valid;
   logic                                    regif_rx_data_ready;
 
+  ////////////////////////////////////////////////
+  // FIFO-TX/RX
+  ////////////////////////////////////////////////
+
   tx_data_reg_t                            uart_tx_data_reg;
   logic                                    uart_tx_data_valid;
   logic                                    uart_tx_data_ready;
@@ -59,33 +79,48 @@ module uart_top #(
   logic                                    uart_rx_data_valid;
   logic                                    uart_rx_data_ready;
 
+  ////////////////////////////////////////////////
+  // MISCELLANEOUS
+  ////////////////////////////////////////////////
+
   intr_ctrl_reg_t                          intr_ctrl_reg;
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Submodule Instantiations
+  //////////////////////////////////////////////////////////////////////////////////////////////////
 
-apb_memif #(
-    .ADDR_WIDTH(ADDR_WIDTH),
-    .DATA_WIDTH(DATA_WIDTH)
-) (
-    .arst_ni(arst_ni),
-    .clk_i(clk_i),
-    .psel_i(psel_i),
-    .penable_i(penable_i),
-    .paddr_i(paddr_i),
-    .pwrite_i(pwrite_i),
-    .pwdata_i(pwdata_i),
-    .pstrb_i(pstrb_i),
-    .pready_o(pready_o),
-    .prdata_o(prdata_o),
-    .pslverr_o(pslverr_o),
-    .mreq_o(mreq),
-    .maddr_o(maddr),
-    .mwe_o(mwe),
-    .mwdata_o(mwdata),
-    .mstrb_o(mstrb),
-    .mack_i(mack),
-    .mrdata_i(mrdata),
-    .mresp_i(mresp)
-);
+  ////////////////////////////////////////////////
+  // APB Memory Interface
+  ////////////////////////////////////////////////
+
+  apb_memif#(
+      .ADDR_WIDTH(ADDR_WIDTH),
+      .DATA_WIDTH(DATA_WIDTH)
+  ) (
+      .arst_ni(arst_ni),
+      .clk_i(clk_i),
+      .psel_i(psel_i),
+      .penable_i(penable_i),
+      .paddr_i(paddr_i),
+      .pwrite_i(pwrite_i),
+      .pwdata_i(pwdata_i),
+      .pstrb_i(pstrb_i),
+      .pready_o(pready_o),
+      .prdata_o(prdata_o),
+      .pslverr_o(pslverr_o),
+      .mreq_o(mreq),
+      .maddr_o(maddr),
+      .mwe_o(mwe),
+      .mwdata_o(mwdata),
+      .mstrb_o(mstrb),
+      .mack_i(mack),
+      .mrdata_i(mrdata),
+      .mresp_i(mresp)
+  );
+
+  ////////////////////////////////////////////////
+  // UART Register Interface
+  ////////////////////////////////////////////////
 
   uart_regif #(
       .ADDR_WIDTH(ADDR_WIDTH),
@@ -115,6 +150,40 @@ apb_memif #(
       .intr_ctrl_reg_o(intr_ctrl_reg)
   );
 
+  ////////////////////////////////////////////////
+  // TX FIFO
+  ////////////////////////////////////////////////
+  
+  // TODO LABIB
 
+  ////////////////////////////////////////////////
+  // RX FIFO
+  ////////////////////////////////////////////////
+
+  // TODO FARHAN
+
+  ////////////////////////////////////////////////
+  // CLK DIV n
+  ////////////////////////////////////////////////
+  
+  // TODO LABIB
+
+  ////////////////////////////////////////////////
+  // CLK DIV 8
+  ////////////////////////////////////////////////
+
+  // TODO FARHAN
+
+  ////////////////////////////////////////////////
+  // UART TX
+  ////////////////////////////////////////////////
+  
+  // TODO LABIB
+
+  ////////////////////////////////////////////////
+  // UART RX
+  ////////////////////////////////////////////////
+
+  // TODO FARHAN
 
 endmodule

@@ -36,18 +36,11 @@ module apb_memif #(
   // Signals
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Register to track previous penable state.
-  logic penable_q;
-
-  // Signal to indicate when to update output signals.
-  logic pout_update;
-
-  // Register
-  logic                  pready_q;
-  // Register
-  logic [DATA_WIDTH-1:0] prdata_q;
-  // Register
-  logic                  pslverr_q;
+  logic                  penable_q;  // Register to track previous penable state.
+  logic                  pout_update;  // Signal to indicate when to update output signals.
+  logic                  pready_q;  // Register to hold pready output
+  logic [DATA_WIDTH-1:0] prdata_q;  // Register to hold prdata output
+  logic                  pslverr_q;  // Register to hold pslverr output
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Combinational Logic

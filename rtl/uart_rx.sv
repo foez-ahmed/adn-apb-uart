@@ -10,7 +10,9 @@
   input  logic       parity_type_i,
 
   output logic [7:0] data_o,
-  output logic       data_valid_o
+  output logic       data_valid_o,
+
+  output logic       parity_error_o
 );
 
   // --------------------------------------------------------------------------
@@ -38,6 +40,7 @@
 
   // Output assignments
   assign data_o = data_shift;
+  assign parity_error_o = parity_en_i && !parity_ok;
 
   // --------------------------------------------------------------------------
   // Synchronize / register rx for edge detection

@@ -79,6 +79,7 @@ module uart_top
   rx_data_reg_t                            uart_rx_data_reg;
   logic                                    uart_rx_data_valid;
   logic                                    uart_rx_data_ready;
+  logic                                    uart_rx_parity_error;
 
   logic               [    TX_FIFO_SIZE:0] tx_fifo_count_adpt;
   logic               [    RX_FIFO_SIZE:0] rx_fifo_count_adpt;
@@ -259,7 +260,9 @@ module uart_top
       .parity_type_i(cfg_reg.PARITY_TYPE),
 
       .data_o(uart_rx_data_reg.RX_DATA),
-      .data_valid_o(uart_rx_data_valid)
+      .data_valid_o(uart_rx_data_valid),
+
+      .parity_error_o(uart_rx_parity_error)
   );
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,7 +278,7 @@ module uart_top
 
   assign irq_tx_almost_full  = intr_ctrl_reg.TX_ALMOST_FULL ? tx_fifo_count_reg > 200 : '0;
   assign irq_rx_almost_full  = intr_ctrl_reg.RX_ALMOST_FULL ? rx_fifo_count_reg > 200 : '0;
-  assign irq_rx_parity_error = intr_ctrl_reg.RX_PARITY_ERROR ? '0 : '0;  // TODO LATER
+  assign irq_rx_parity_error = intr_ctrl_reg.RX_PARITY_ERROR ? uart_rx_parity_error : '0;
   assign irq_rx_valid        = intr_ctrl_reg.RX_VALID ? regif_rx_data_valid : '0;
 
 endmodule

@@ -23,21 +23,24 @@ module uart_regif
     input  tx_fifo_count_reg_t tx_fifo_count_reg_i,
     input  rx_fifo_count_reg_t rx_fifo_count_reg_i,
 
-    output tx_data_reg_t       tx_data_reg_o,
-    output logic               tx_data_valid_o,
-    input  logic               tx_data_ready_i,
+    output tx_data_reg_t tx_data_reg_o,
+    output logic         tx_data_valid_o,
+    input  logic         tx_data_ready_i,
 
-    input  rx_data_reg_t       rx_data_reg_i,
-    input  logic               rx_data_valid_i,
-    output logic               rx_data_ready_o,
+    input  rx_data_reg_t rx_data_reg_i,
+    input  logic         rx_data_valid_i,
+    output logic         rx_data_ready_o,
 
-    output intr_ctrl_reg_t     intr_ctrl_reg_o
+    output intr_ctrl_reg_t intr_ctrl_reg_o
 );
 
   logic read_err;
   logic write_err;
 
   always_comb begin
+    read_err = '1;
+    mrdata_o = '0;
+    rx_data_ready_o = '0;
 
     case (maddr_i)
       REG_CTRL_ADDR: begin
@@ -52,7 +55,7 @@ module uart_regif
 
       REG_CFG_ADDR: begin
         read_err = '0;
-        mrdata_o =cfg_reg_o;
+        mrdata_o = cfg_reg_o;
       end
 
       REG_TX_FIFO_COUNT_ADDR: begin
@@ -66,8 +69,11 @@ module uart_regif
       end
 
       REG_RX_DATA_ADDR: begin
-        read_err = '0;
-        mrdata_o = rx_data_reg_i;
+        if (rx_data_valid_i) begin
+          read_err = '0;
+          mrdata_o = rx_data_reg_i;
+          rx_data_ready_o = '1;
+        end
       end
 
       REG_INTR_CTRL_ADDR: begin
@@ -76,14 +82,15 @@ module uart_regif
       end
 
       default: begin
-        read_err = '1;
-        mrdata_o = '0;
       end
     endcase
 
   end
 
   always_comb begin
+    write_err = '1;
+    tx_data_valid_o = '0;
+    tx_data_reg_o = mwdata_i;
 
     case (maddr_i)
       REG_CTRL_ADDR: begin
@@ -91,15 +98,18 @@ module uart_regif
       end
 
       REG_CLK_DIV_ADDR: begin
-        write_err = '0;
+        if (tx_fifo_count_reg_i == '0 && rx_fifo_count_reg_i) write_err = '0;
       end
 
       REG_CFG_ADDR: begin
-        write_err = '0;
+        if (tx_fifo_count_reg_i == '0 && rx_fifo_count_reg_i) write_err = '0;
       end
 
       REG_TX_DATA_ADDR: begin
-        write_err = '0;
+        if (tx_data_ready_i) begin
+          write_err = '0;
+          tx_data_valid_o = '1;
+        end
       end
 
       REG_INTR_CTRL_ADDR: begin
@@ -107,10 +117,42 @@ module uart_regif
       end
 
       default: begin
-        write_err = '1;
       end
 
     endcase
   end
 
+  always_ff @(posedge clk_i or negedge arst_ni) begin
+    if (~arst_ni) begin
+      ctrl_reg_o <= '0;
+      clk_div_reg_o <= 'h2580;
+      cfg_reg_o <= '0;
+      intr_ctrl_reg_o <= '0;
+
+    end else if (~write_err && mwe_i) begin
+
+      case (maddr_i)
+        REG_CTRL_ADDR: begin
+          ctrl_reg_o <= mwdata_i;
+        end
+
+        REG_CLK_DIV_ADDR: begin
+          clk_div_reg_o <= mwdata_i;
+        end
+
+        REG_CFG_ADDR: begin
+          cfg_reg_o <= mwdata_i;
+        end
+
+        REG_INTR_CTRL_ADDR: begin
+          intr_ctrl_reg_o <= mwdata_i;
+        end
+
+        default: begin
+        end
+
+      endcase
+
+    end
+  end
 endmodule

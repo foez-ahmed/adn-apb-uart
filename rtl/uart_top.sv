@@ -74,6 +74,7 @@ module uart_top
   tx_data_reg_t                            uart_tx_data_reg;
   logic                                    uart_tx_data_valid;
   logic                                    uart_tx_data_ready;
+  logic               [               7:0] uart_tx_data;
 
   rx_data_reg_t                            uart_rx_data_reg;
   logic                                    uart_rx_data_valid;
@@ -156,8 +157,21 @@ module uart_top
   ////////////////////////////////////////////////
   // TX FIFO
   ////////////////////////////////////////////////
-  
-  // TODO LABIB
+  cdc_fifo #(
+      .ELEM_WIDTH(8),
+      .FIFO_SIZE (8)
+  ) u_tx_fifo (
+      .elem_in_i(regif_tx_data_reg.TX_DATA),
+      .elem_in_clk_i(clk_i),
+      .elem_in_valid_i(regif_tx_data_valid),
+      .elem_in_ready_o(regif_tx_data_ready),
+      .elem_in_count_o(tx_fifo_count_reg),
+      .elem_out_o(uart_tx_data),
+      .elem_out_clk_i(divided_clk_8n),
+      .elem_out_valid_o(uart_tx_data_valid),
+      .elem_out_ready_i(uart_tx_data_ready),
+      .elem_out_count_o()
+  );
 
   ////////////////////////////////////////////////
   // RX FIFO
@@ -168,8 +182,15 @@ module uart_top
   ////////////////////////////////////////////////
   // CLK DIV n
   ////////////////////////////////////////////////
-  
-  // TODO LABIB
+  clk_div #(
+      .DIV_WIDTH(32)
+  ) u_clk_div (
+
+      .arst_ni(arst_ni),
+      .clk_i  (clk_i),
+      .div_i  (clk_div_reg),
+      .clk_o  (divided_clk_n)
+  );
 
   ////////////////////////////////////////////////
   // CLK DIV 8
@@ -180,8 +201,19 @@ module uart_top
   ////////////////////////////////////////////////
   // UART TX
   ////////////////////////////////////////////////
-  
-  // TODO LABIB
+  uart_tx u_tx (
+      .arst_ni(arst_ni),
+      .clk_i  (divided_clk_8n),
+
+      .data_i(tx_data_reg_o),
+      .data_valid_i(tx_data_valid_o),
+      .data_ready_o(tx_data_ready_i),
+
+      .parity_en_i (cfg_reg.PARITY_EN),
+      .extra_stop_i(cfg_reg.EXTRA_STOP_BITS),
+
+      .tx_o(tx_o)
+  );
 
   ////////////////////////////////////////////////
   // UART RX
@@ -193,6 +225,9 @@ module uart_top
   // Interrupt Signals
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  
+  assign irq_tx_almost_full  = intr_ctrl_reg.TX_ALMOST_FULL ? tx_fifo_count_reg_i > 200 : '0;
+  assign irq_rx_almost_full  = intr_ctrl_reg.RX_ALMOST_FULL ? rx_fifo_count_reg_i > 200 : '0;
+  assign irq_rx_parity_error = intr_ctrl_reg.RX_PARITY_ERROR ? '0 : '0; // TODO LATER
+  assign irq_rx_valid        = intr_ctrl_reg.RX_VALID ? regif_rx_data_valid : '0;
 
 endmodule

@@ -40,7 +40,6 @@ package apb_uart_pkg;
   // Bit mapping (MSB -> LSB): [31:3] RESERVED, [2] RX_FLUSH, [1] TX_FLUSH, [0] CLK_EN
   // Resets: all zeros. Writing '1' to TX_FLUSH/RX_FLUSH should clear respective FIFOs (self-clearing).
   typedef struct packed {
-    logic [28:0] RESERVED;  // bits [31:3]
     logic        RX_FLUSH;  // bit 2: write 1 to flush RX FIFO (self-clearing)
     logic        TX_FLUSH;  // bit 1: write 1 to flush TX FIFO (self-clearing)
     logic        CLK_EN;    // bit 0: enable UART clock
@@ -54,7 +53,6 @@ package apb_uart_pkg;
   // Bit mapping: [31:3] RESERVED, [2] EXTRA_STOP_BITS, [1] PARITY_TYPE, [0] PARITY_EN
   // PARITY_EN = 1 enables parity; PARITY_TYPE = 0 => even, 1 => odd
   typedef struct packed {
-    logic [28:0] RESERVED;         // bits [31:3]
     logic        EXTRA_STOP_BITS;  // bit 2: 0 = 1 stop bit, 1 = 2 stop bits
     logic        PARITY_TYPE;      // bit 1: 0 = even, 1 = odd (when PARITY_EN=1)
     logic        PARITY_EN;        // bit 0: parity enable
@@ -69,14 +67,12 @@ package apb_uart_pkg;
   // TX_DATA (0x14) - Write-only: enqueue a byte to TX FIFO
   // Mapping: [31:8] RESERVED, [7:0] TX_DATA
   typedef struct packed {
-    logic [23:0] RESERVED;  // bits [31:8]
     logic [7:0]  TX_DATA;   // bits [7:0] - write the byte to transmit
   } tx_data_reg_t;
 
   // RX_DATA (0x18) - Read-only: dequeue oldest byte from RX FIFO
   // Mapping: [31:8] RESERVED, [7:0] RX_DATA
   typedef struct packed {
-    logic [23:0] RESERVED;  // bits [31:8]
     logic [7:0]  RX_DATA;   // bits [7:0] - read received byte
   } rx_data_reg_t;
 
@@ -84,7 +80,6 @@ package apb_uart_pkg;
   // Bit mapping: [31:4] RESERVED, [3] TX_ALMOST_EMPTY, [2] RX_ALMOST_FULL, [1] RX_PARITY_ERROR, [0] RX_VALID
   // Writing '1' to status bits clears them.
   typedef struct packed {
-    logic [27:0] RESERVED;         // bits [31:4]
     logic        TX_ALMOST_FULL;  // bit 3: TX FIFO almost full (interrupt/status)
     logic        RX_ALMOST_FULL;   // bit 2: RX FIFO almost full (interrupt/status)
     logic        RX_PARITY_ERROR;  // bit 1: parity error detected on received byte

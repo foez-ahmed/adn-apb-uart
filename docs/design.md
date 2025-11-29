@@ -109,7 +109,7 @@ Controls interrupt enables and provides status flags for various UART conditions
 | RX\_VALID | RW | 0 | 0x0 | Receive Data Valid: Set when data is available in RX FIFO, write 1 to clear |
 | RX\_PARITY\_ERROR | RW | 1 | 0x0 | Receive Parity Error: Set when parity error detected, write 1 to clear |
 | RX\_ALMOST\_FULL | RW | 2 | 0x0 | Receive FIFO Almost Full: Set when RX FIFO reaches threshold, write 1 to clear |
-| TX\_ALMOST\_EMPTY | RW | 3 | 0x0 | Transmit FIFO Almost Empty: Set when TX FIFO falls below threshold, write 1 to clear |
+| TX\_ALMOST\_FULL | RW | 3 | 0x0 | Transmit FIFO Almost Full: Set when TX FIFO falls below threshold, write 1 to clear |
 | RESERVED | \--| 31:4 | 0x0 | Reserved for future use |
 
 

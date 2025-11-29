@@ -1,5 +1,9 @@
 module uart_regif
   import apb_uart_pkg::*;
+#(
+    parameter int ADDR_WIDTH = 5,
+    parameter int DATA_WIDTH = 32
+)
 (
 
     input logic                      arst_ni,   //global reset

@@ -82,7 +82,7 @@ package apb_uart_pkg;
   // Writing '1' to status bits clears them.
   typedef struct packed {
     logic [27:0] RESERVED;         // bits [31:4]
-    logic        TX_ALMOST_EMPTY;  // bit 3: TX FIFO almost empty (interrupt/status)
+    logic        TX_ALMOST_FULL;  // bit 3: TX FIFO almost full (interrupt/status)
     logic        RX_ALMOST_FULL;   // bit 2: RX FIFO almost full (interrupt/status)
     logic        RX_PARITY_ERROR;  // bit 1: parity error detected on received byte
     logic        RX_VALID;         // bit 0: data available in RX FIFO

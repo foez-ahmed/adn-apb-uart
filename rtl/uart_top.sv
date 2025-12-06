@@ -182,6 +182,22 @@ module uart_top
   ////////////////////////////////////////////////
   // RX FIFO
   ////////////////////////////////////////////////
+  cdc_fifo #(
+      .ELEM_WIDTH(8),
+      .FIFO_SIZE (2)
+  ) u_rx_fifo (
+      .arst_ni(arst_ni),
+      .elem_in_i(uart_rx_data_reg),
+      .elem_in_clk_i(divided_clk_n),
+      .elem_in_valid_i(uart_rx_data_valid),
+      .elem_in_ready_o(uart_rx_data_ready),
+      .elem_in_count_o(),
+      .elem_out_o(regif_tx_data_reg),
+      .elem_out_clk_i(clk_i),
+      .elem_out_valid_o(uart_rx_data_valid),
+      .elem_out_ready_i(regif_rx_data_ready),
+      .elem_out_count_o(rx_fifo_count_reg)
+  );
 
   cdc_fifo #(
       .ELEM_WIDTH(8),

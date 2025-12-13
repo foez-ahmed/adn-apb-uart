@@ -156,7 +156,7 @@ module uart_regif
   always_ff @(posedge clk_i or negedge arst_ni) begin
     if (~arst_ni) begin
       ctrl_reg_o <= '0;
-      clk_div_reg_o <= 'h2580;
+      clk_div_reg_o <= 'h28B0;
       cfg_reg_o <= '0;
       intr_ctrl_reg_o <= '0;
 

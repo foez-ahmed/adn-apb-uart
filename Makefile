@@ -30,9 +30,11 @@ TB_DIR    := ${ROOT_DIR}/tb
 
 FILE_LIST += -i ${INC_DIR}
 FILE_LIST += -i ${TB_DIR}/include
+FILE_LIST += -L uvm
 FILE_LIST += ${PKG_DIR}/apb_uart_pkg.sv
 FILE_LIST += ${PKG_DIR}/uart_tx_pkg.sv
 FILE_LIST += ${PKG_DIR}/uart_rx_pkg.sv
+FILE_LIST += $(INC_DIR)/common_defines.svh
 FILE_LIST += $(shell find ${INTF_DIR}/ -name "*.sv")
 FILE_LIST += $(shell find ${RTL_DIR}/ -name "*.sv")
 FILE_LIST += $(shell find ${TB_DIR}/ -name "*.sv")
@@ -41,11 +43,16 @@ FILE_LIST += $(shell find ${TB_DIR}/ -name "*.sv")
 # Tool Setup
 ####################################################################################################
 
-MAKE	?= make
 XVLOG ?= xvlog
 XVHDL ?= xvhdl
 XELAB ?= xelab
 XSIM  ?= xsim
+
+#####################################################################################################
+# Commands
+#####################################################################################################
+
+HL_EW := | grep -E "ERROR:|WARNING:|" --color=auto
 
 #####################################################################################################
 # Targets
@@ -84,6 +91,6 @@ simulate:
 	@make -s ${BUILD_DIR}
 	@make -s ${LOG_DIR}
 	@$(eval TIME := $(shell date +%Y%m%d_%H%M%S))
-	@cd ${BUILD_DIR} && ${XVLOG} -sv ${FILE_LIST} --log ${LOG_DIR}/vlog_${TIME}.log
-	@cd ${BUILD_DIR} && ${XELAB} ${TOP_MODULE} -s ${TOP_MODULE} --log ${LOG_DIR}/xelab_${TIME}.log
-	@cd ${BUILD_DIR} && ${XSIM} ${TOP_MODULE} $(XSIM_ARGS) --log ${LOG_DIR}/xsim_${TIME}.log
+	@cd ${BUILD_DIR} && ${XVLOG} -sv ${FILE_LIST} --log ${LOG_DIR}/vlog_${TIME}.log ${HL_EW}
+	@cd ${BUILD_DIR} && ${XELAB} ${TOP_MODULE} -s ${TOP_MODULE} --log ${LOG_DIR}/xelab_${TIME}.log ${HL_EW}
+	@cd ${BUILD_DIR} && ${XSIM} ${TOP_MODULE} $(XSIM_ARGS) --log ${LOG_DIR}/xsim_${TIME}.log ${HL_EW}

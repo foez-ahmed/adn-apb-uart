@@ -5,32 +5,32 @@ package apb_uart_pkg;
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   // System/address/data widths used by the APB interface logic
-  localparam int SYS_ADDR_WIDTH = 5;  // System Address Width (allows addressing 32 bytes)
-  localparam int SYS_DATA_WIDTH = 32;  // System Data Width (32-bit registers)
+  parameter int SYS_ADDR_WIDTH = 5;  // System Address Width (allows addressing 32 bytes)
+  parameter int SYS_DATA_WIDTH = 32;  // System Data Width (32-bit registers)
 
   // Defaults for UART configuration (matches documentation)
-  // DEFAULT_BAUD_RATE: reset divider value (0x2580) -> 9600 baud @ 100 MHz APB clock
-  localparam int DEFAULT_BAUD_RATE = 'h2580;  // 9600
-  localparam bit DEFAULT_PARITY_EN = 1'b0;  // Parity disabled by default
-  localparam bit DEFAULT_PARITY_TYPE = 1'b0;  // Default parity = even (0 = even, 1 = odd)
-  localparam bit DEFAULT_EXTRA_STOP_BITS = 1'b0;  // Default = 1 stop bit
+  // DEFAULT_BAUD_RATE: reset divider value (0x28B0) -> 9600 baud @ 100 MHz APB clock
+  parameter int DEFAULT_BAUD_RATE = 'h28B0;  // 9600
+  parameter bit DEFAULT_PARITY_EN = 1'b0;  // Parity disabled by default
+  parameter bit DEFAULT_PARITY_TYPE = 1'b0;  // Default parity = even (0 = even, 1 = odd)
+  parameter bit DEFAULT_EXTRA_STOP_BITS = 1'b0;  // Default = 1 stop bit
 
-  localparam int TX_FIFO_SIZE = 8;  // Transmit FIFO depth (in bytes) = 2 ^ TX_FIFO_SIZE
-  localparam int RX_FIFO_SIZE = 8;  // Receive FIFO depth (in bytes) = 2 ^ RX_FIFO_SIZE
+  parameter int TX_FIFO_SIZE = 8;  // Transmit FIFO depth (in bytes) = 2 ^ TX_FIFO_SIZE
+  parameter int RX_FIFO_SIZE = 8;  // Receive FIFO depth (in bytes) = 2 ^ RX_FIFO_SIZE
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // REGISTER ADDRESSES
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Register addresses (byte offsets) exposed over the APB bus
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_CTRL_ADDR = 'h00;  // Control Register (CTRL)
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_CLK_DIV_ADDR = 'h04;  // Clock Divider (CLK_DIV)
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_CFG_ADDR = 'h08;  // Configuration (CFG)
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_TX_FIFO_COUNT_ADDR = 'h0C;  // TX FIFO count (RO)
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_RX_FIFO_COUNT_ADDR = 'h10;  // RX FIFO count (RO)
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_TX_DATA_ADDR = 'h14;  // TX data (WO)
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_RX_DATA_ADDR = 'h18;  // RX data (RO)
-  localparam logic [SYS_ADDR_WIDTH-1:0] REG_INTR_CTRL_ADDR = 'h1C;  // Interrupt control/status
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_CTRL_ADDR = 'h00;  // Control Register (CTRL)
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_CLK_DIV_ADDR = 'h04;  // Clock Divider (CLK_DIV)
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_CFG_ADDR = 'h08;  // Configuration (CFG)
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_TX_FIFO_COUNT_ADDR = 'h0C;  // TX FIFO count (RO)
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_RX_FIFO_COUNT_ADDR = 'h10;  // RX FIFO count (RO)
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_TX_DATA_ADDR = 'h14;  // TX data (WO)
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_RX_DATA_ADDR = 'h18;  // RX data (RO)
+  parameter logic [SYS_ADDR_WIDTH-1:0] REG_INTR_CTRL_ADDR = 'h1C;  // Interrupt control/status
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // REGISTER TYPE DEFINITIONS

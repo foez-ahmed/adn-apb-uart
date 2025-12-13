@@ -24,7 +24,7 @@ This document describes the register map and configuration options for the APB-U
 | Register        | Access | Address | Reset Value | Description                                                 |
 |-----------------|--------|---------|-------------|-------------------------------------------------------------|
 | CTRL            | RW     | 0x00    | 0x0         | Control register for clock enable and FIFO flush operations |
-| CLK\_DIV        | RW     | 0x04    | 0x2580      | Clock divider register for baud rate generation             |
+| CLK\_DIV        | RW     | 0x04    | 0x28B0      | Clock divider register for baud rate generation             |
 | CFG             | RW     | 0x08    | 0x0         | UART configuration register for parity and stop bits        |
 | TX\_FIFO\_COUNT | RO     | 0x0C    | 0x0         | Transmit FIFO data count (read-only)                        |
 | RX\_FIFO\_COUNT | RO     | 0x10    | 0x0         | Receive FIFO data count (read-only)                         |
@@ -49,11 +49,11 @@ Controls the basic operation of the UART peripheral, including clock enable and 
 
 Configures the baud rate by dividing the input clock. The baud rate is calculated as: `Baud Rate = APB_Clock / (DIVIDER + 1)`.
 
-Default value of 0x2580 (9600) provides a baud rate of 9600 when using a 100 MHz APB clock.
+Default value of 0x28B0 (9600) provides a baud rate of 9600 when using a 100 MHz APB clock.
 
 | Bit Field | Access | Index | Reset Value | Description |
 |-------|-------|-------|-------|-------|
-| DIVIDER | RW | 31:0 | 0x2580 | Clock divider value for baud rate generation |
+| DIVIDER | RW | 31:0 | 0x28B0 | Clock divider value for baud rate generation |
 
 #### CFG (0x08) - Configuration Register
 

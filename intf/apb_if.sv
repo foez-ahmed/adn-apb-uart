@@ -1,6 +1,6 @@
-interface apb_intf #(
-    parameter int ADDR_WIDTH = 32,
-    parameter int DATA_WIDTH = 32
+interface apb_if #(
+    parameter int ADDR_WIDTH = `DEFAULT_ADDR_WIDTH,
+    parameter int DATA_WIDTH = `DEFAULT_DATA_WIDTH
 ) (
     // Global signals
     input logic arst_ni,  // Asynchronous reset, active low
@@ -81,6 +81,30 @@ interface apb_intf #(
   task automatic read(input logic [ADDR_WIDTH-1:0] address,
                       output logic [DATA_WIDTH-1:0] read_data);
     read_32(address, read_data);
+  endtask
+
+  task automatic get_transaction(output logic direction, output logic [ADDR_WIDTH-1:0] address,
+                                 output logic [DATA_WIDTH-1:0] write_data,
+                                 output logic [DATA_WIDTH/8-1:0] write_strobe,
+                                 output logic [DATA_WIDTH-1:0] read_data, output logic slverr);
+
+    //Wait for setup phase
+    do @(posedge clk_i); while (!(psel == 1'b1 && penable == 1'b0));
+
+    //Wait for access phase
+    do @(posedge clk_i); while (!(psel == 1'b1 && penable == 1'b1));
+
+    //Update information as long as enable stage high
+    while (psel == 1'b1 && penable == 1'b1) begin
+      direction    = pwrite;
+      address      = paddr;
+      write_data   = pwdata;
+      write_strobe = pstrb;
+      read_data    = prdata;
+      slverr       = pslverr;
+      @(posedge clk_i);
+    end
+
   endtask
 
 endinterface

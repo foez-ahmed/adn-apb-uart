@@ -1,40 +1,76 @@
 [*]
-[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
-[*] Sat Nov 29 12:26:01 2025
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Sat Dec 20 08:51:22 2025
 [*]
-[dumpfile] "/home/foez/Documents/ADN/adn-apb-uart/build/apb_uart_sanity_check_tb.vcd"
-[dumpfile_mtime] "Sat Nov 29 12:24:54 2025"
-[dumpfile_size] 65622560
-[savefile] "/home/foez/Documents/ADN/adn-apb-uart/wave.gtkw"
+[dumpfile] "C:\apb-uart\adn-apb-uart\build\apb_uart_tb.vcd"
+[dumpfile_mtime] "Sat Dec 20 08:50:42 2025"
+[dumpfile_size] 2040865
+[savefile] "C:\apb-uart\adn-apb-uart\wave.gtkw"
 [timestart] 0
-[size] 1920 1001
+[size] 1920 1009
 [pos] -1 -1
-*-30.072845 833585000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-[treeopen] apb_uart_sanity_check_tb.
-[treeopen] apb_uart_sanity_check_tb.u_dut.
-[sst_width] 277
-[signals_width] 126
+*-24.464460 123000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] apb_uart_tb.
+[treeopen] apb_uart_tb.udut.
+[sst_width] 197
+[signals_width] 371
 [sst_expanded] 1
-[sst_vpaned_height] 296
-@28
-apb_uart_sanity_check_tb.u_apb_if.arst_ni
-apb_uart_sanity_check_tb.u_apb_if.clk_i
-apb_uart_sanity_check_tb.u_apb_if.psel
-apb_uart_sanity_check_tb.u_apb_if.penable
-@22
-apb_uart_sanity_check_tb.u_apb_if.paddr[4:0]
-@28
-apb_uart_sanity_check_tb.u_apb_if.pwrite
-@22
-apb_uart_sanity_check_tb.u_apb_if.pwdata[31:0]
-apb_uart_sanity_check_tb.u_apb_if.pstrb[3:0]
-@28
-apb_uart_sanity_check_tb.u_apb_if.pready
-@22
-apb_uart_sanity_check_tb.u_apb_if.prdata[31:0]
-@28
-apb_uart_sanity_check_tb.u_apb_if.pslverr
+[sst_vpaned_height] 297
 @200
+-CTRL
+@28
+apb_uart_tb.ctrl_intf.arst_ni
+apb_uart_tb.ctrl_intf.clk_en
+apb_uart_tb.ctrl_intf.clk_i
+apb_uart_tb.ctrl_intf.tp
+@200
+-
+-APB
+@28
+apb_uart_tb.apb_intf.arst_ni
+apb_uart_tb.apb_intf.clk_i
+apb_uart_tb.apb_intf.psel
+apb_uart_tb.apb_intf.penable
+@22
+apb_uart_tb.apb_intf.paddr[4:0]
+@28
+apb_uart_tb.apb_intf.pwrite
+@22
+apb_uart_tb.apb_intf.pwdata[31:0]
+apb_uart_tb.apb_intf.pstrb[3:0]
+@200
+-
+@28
+apb_uart_tb.apb_intf.pready
+@22
+apb_uart_tb.apb_intf.prdata[31:0]
+@28
+apb_uart_tb.apb_intf.pslverr
+@200
+-
+-UART
+@22
+apb_uart_tb.uart_intf.BAUD_RATE[31:0]
+apb_uart_tb.uart_intf.DATA_BITS[31:0]
+@28
+apb_uart_tb.uart_intf.PARITY_ENABLE
+apb_uart_tb.uart_intf.PARITY_TYPE
+apb_uart_tb.uart_intf.SECOND_STOP_BIT
+@200
+-
+@28
+apb_uart_tb.uart_intf.drive_rx
+apb_uart_tb.uart_intf.drive_tx
+@200
+-
+@28
+apb_uart_tb.uart_intf.reg_rx
+apb_uart_tb.uart_intf.reg_tx
+apb_uart_tb.uart_intf.rx
+apb_uart_tb.uart_intf.tx
+@200
+-
+-
 -
 [pattern_trace] 1
 [pattern_trace] 0

@@ -2,14 +2,17 @@
 # Variables
 ######################################################################################################
 
-TOP_MODULE ?= apb_uart_tb
-GUI ?= 0
+TOP_MODULE := apb_uart_tb
+GUI := 0
+UVM_TESTNAME := base_test
 
 ifeq ($(GUI), 1)
 	XSIM_ARGS += -gui
 else
 	XSIM_ARGS += -runall
 endif
+
+XSIM_ARGS += --testplusarg "UVM_TESTNAME=$(UVM_TESTNAME)"
 
 ####################################################################################################
 # Directory Setup
@@ -86,11 +89,16 @@ tools_chain:
 	@echo "XELAB := ${XELAB}"
 	@echo "XSIM  := ${XSIM}"
 
-.PHONY: simulate
-simulate:
+.PHONY: compile
+compile:
+	@make -s clean
 	@make -s ${BUILD_DIR}
 	@make -s ${LOG_DIR}
 	@$(eval TIME := $(shell date +%Y%m%d_%H%M%S))
 	@cd ${BUILD_DIR} && ${XVLOG} -sv ${FILE_LIST} --log ${LOG_DIR}/vlog_${TIME}.log ${HL_EW}
 	@cd ${BUILD_DIR} && ${XELAB} ${TOP_MODULE} -s ${TOP_MODULE} --log ${LOG_DIR}/xelab_${TIME}.log ${HL_EW}
-	@cd ${BUILD_DIR} && ${XSIM} ${TOP_MODULE} $(XSIM_ARGS) --log ${LOG_DIR}/xsim_${TIME}.log ${HL_EW}
+	
+.PHONY: simulate
+simulate:
+	@echo "${XSIM_ARGS}" > ${BUILD_DIR}/xsim_args
+	@cd ${BUILD_DIR} && ${XSIM} ${TOP_MODULE} -f xsim_args --log ${LOG_DIR}/xsim_${TIME}.log ${HL_EW}

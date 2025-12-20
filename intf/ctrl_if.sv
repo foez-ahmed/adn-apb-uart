@@ -3,26 +3,29 @@ interface ctrl_if;
 
   // Asynchronous reset signal, active low
   logic arst_ni;
+
   // Clock output signal
   logic clk_i;
 
   // Clock enable flag
   bit clk_en;
+
   // Time period for the clock
-  realtime tp;
+  realtime tp = 10ns;
 
   // Task to apply reset for a specified duration
-  task static apply_reset(input realtime duration);
+  task static apply_reset(input realtime duration = 10*tp);
     #duration;  // Wait for the specified duration
     arst_ni <= '0;  // Assert reset (active low)
     clk_en  <= '0;  // Disable clock
+    clk_i   <= '0;  // Set clock low
     #duration;  // Wait again
     arst_ni <= '1;  // Deassert reset
     #duration;  // Wait to stabilize
   endtask
 
   // Task to enable the clock with a given time period
-  task static enable_clock(input realtime timeperiod);
+  task static enable_clock(input realtime timeperiod = tp);
     tp = timeperiod;  // Set the time period
     clk_en <= '1;  // Enable clock generation
   endtask

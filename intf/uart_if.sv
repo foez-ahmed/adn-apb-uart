@@ -15,15 +15,15 @@ interface uart_if;
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Baud rate for UART communication (default 115200)
-  int   BAUD_RATE = 115200;
+  int  BAUD_RATE = 115200;
   // Enable parity bit (0 = disabled, 1 = enabled)
-  bit   PARITY_ENABLE = 0;
+  bit  PARITY_ENABLE = 0;
   // Parity type (0 = even, 1 = odd)
-  bit   PARITY_TYPE = 1;
+  bit  PARITY_TYPE = 1;
   // Use second stop bit (0 = 1 stop bit, 1 = 2 stop bits)
-  bit   SECOND_STOP_BIT = 0;
+  bit  SECOND_STOP_BIT = 0;
   // Number of data bits (typically 8)
-  int   DATA_BITS = 8;
+  int  DATA_BITS = 8;
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Methods
@@ -170,5 +170,17 @@ interface uart_if;
 
   // Undefine the macro to avoid conflicts
   `undef SEND_RECV
+
+  task automatic wait_till_idle(input int tx_len = 3);
+    realtime bit_time;
+    int i;
+    i = 0;
+    while (i < tx_len*22) begin
+      bit_time = 1s / BAUD_RATE;
+      #(bit_time / 2);
+      i++;
+      if (tx == 0 || rx == 0) i = 0;
+    end
+  endtask
 
 endinterface

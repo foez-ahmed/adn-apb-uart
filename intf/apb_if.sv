@@ -107,4 +107,14 @@ interface apb_if #(
 
   endtask
 
+  task automatic wait_till_idle(input int tx_len = 3);
+    int i;
+    i = 0;
+    while (i < tx_len * 2) begin
+      @(posedge clk_i);
+      i++;
+      if (psel == 1) i = 0;
+    end
+  endtask
+
 endinterface

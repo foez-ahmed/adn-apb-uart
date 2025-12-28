@@ -1,26 +1,26 @@
- module uart_rx
+module uart_rx
   import uart_rx_pkg::*;
 (
-  input  logic       arst_ni,
-  input  logic       clk_i,
+    input logic arst_ni,
+    input logic clk_i,
 
-  input  logic       rx_i,
+    input logic rx_i,
 
-  input  logic       parity_en_i,
-  input  logic       parity_type_i,
+    input logic parity_en_i,
+    input logic parity_type_i,
 
-  output logic [7:0] data_o,
-  output logic       data_valid_o,
+    output logic [7:0] data_o,
+    output logic       data_valid_o,
 
-  output logic       parity_error_o
+    output logic parity_error_o
 );
 
   // --------------------------------------------------------------------------
   // Parameters: BitTicks sets number of clk cycles per data bit.
   // HalfBitTicks used to sample mid of start bit.
   // --------------------------------------------------------------------------
-  parameter int BitTicks      = 8; // clock cycles per bit
-  localparam int HalfBitTicks = BitTicks/2;
+  parameter int BitTicks = 8;  // clock cycles per bit
+  localparam int HalfBitTicks = BitTicks / 2;
   localparam int TickCntWidth = (BitTicks > 1) ? $clog2(BitTicks) : 1;
 
   // --------------------------------------------------------------------------
@@ -30,6 +30,7 @@
   logic edge_found;
   logic [TickCntWidth-1:0] tick_cnt;
   logic rx_q;
+  logic start_edge;
   logic [7:0] data_shift;
   logic parity_bit_sampled;
   logic parity_ok;
@@ -47,14 +48,19 @@
   // --------------------------------------------------------------------------
   always_ff @(posedge clk_i or negedge arst_ni) begin
     if (!arst_ni) begin
-      rx_q <= 1'b1; // idle line high
+      rx_q <= 1'b1;  // idle line high
     end else begin
       rx_q <= rx_i;
     end
   end
 
-  // Falling edge detect for start bit (high -> low)
-  wire start_edge = rx_q && !rx_i;
+  always_ff @(posedge clk_i or negedge arst_ni) begin
+    if (!arst_ni) begin
+      start_edge <= 1'b0;  // idle line high
+    end else begin
+      start_edge <= (rx_q == 1'b1) && (rx_i == 1'b0) && (state == IDLE);
+    end
+  end
 
   // --------------------------------------------------------------------------
   // Bit timing generator producing edge_found pulses.
@@ -80,7 +86,7 @@
 
   always_comb begin
     if (state == IDLE) begin
-      edge_found = start_edge; // initiate on start edge
+      edge_found = start_edge;  // initiate on start edge
     end else begin
       edge_found = (tick_cnt == ((state == START_BIT) ? HalfBitTicks : BitTicks) - 1);
     end
@@ -90,11 +96,11 @@
   // FSM instantiation
   // --------------------------------------------------------------------------
   uart_rx_fsm u_fsm (
-    .arst_ni      (arst_ni),
-    .clk_i        (clk_i),
-    .edge_found   (edge_found),
-    .parity_en_i  (parity_en_i),
-    .dmux_sel_o   (state)
+      .arst_ni    (arst_ni),
+      .clk_i      (clk_i),
+      .edge_found (edge_found),
+      .parity_en_i(parity_en_i),
+      .dmux_sel_o (state)
   );
 
   // --------------------------------------------------------------------------
@@ -106,14 +112,14 @@
     end else begin
       if (edge_found) begin
         case (state)
-          DATA_0: data_shift[0] <= rx_i;
-          DATA_1: data_shift[1] <= rx_i;
-          DATA_2: data_shift[2] <= rx_i;
-          DATA_3: data_shift[3] <= rx_i;
-          DATA_4: data_shift[4] <= rx_i;
-          DATA_5: data_shift[5] <= rx_i;
-          DATA_6: data_shift[6] <= rx_i;
-          DATA_7: data_shift[7] <= rx_i;
+          DATA_0:  data_shift[0] <= rx_i;
+          DATA_1:  data_shift[1] <= rx_i;
+          DATA_2:  data_shift[2] <= rx_i;
+          DATA_3:  data_shift[3] <= rx_i;
+          DATA_4:  data_shift[4] <= rx_i;
+          DATA_5:  data_shift[5] <= rx_i;
+          DATA_6:  data_shift[6] <= rx_i;
+          DATA_7:  data_shift[7] <= rx_i;
           default: ;
         endcase
       end
@@ -126,7 +132,7 @@
   always_ff @(posedge clk_i or negedge arst_ni) begin
     if (!arst_ni) begin
       parity_bit_sampled <= 1'b0;
-      parity_ok <= 1'b1; // treat as OK on reset
+      parity_ok <= 1'b1;  // treat as OK on reset
     end else begin
       if (parity_en_i && edge_found && state == PARITY_BIT) begin
         parity_bit_sampled <= rx_i;
@@ -152,7 +158,7 @@
           data_valid_o <= 1'b0;
         end
       end else begin
-        data_valid_o <= 1'b0; // one-cycle pulse
+        data_valid_o <= 1'b0;  // one-cycle pulse
       end
     end
   end

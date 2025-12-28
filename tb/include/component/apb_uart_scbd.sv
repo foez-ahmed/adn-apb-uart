@@ -54,12 +54,16 @@ class apb_uart_scbd extends uvm_scoreboard;
       apb_rsp_item apb_item;
       wait (apb_q.size());
       apb_item = apb_q.pop_front();
+      $display("APB %s Addr: 0x%0h Data: 0x%0h", (apb_item.tx_type == 1) ? "WRITE" : "READ",
+               apb_item.addr, apb_item.data);
       if (apb_item.tx_type == 1 && apb_item.addr == 4) begin
         uvm_config_db#(int)::set(uvm_root::get(), "uart", "baud_rate", (100000000 / apb_item.data));
       end else if (apb_item.tx_type == 1 && apb_item.addr == 8) begin
         void'(uvm_config_db#(bit)::get(uvm_root::get(), "uart", "parity_type", apb_item.data[1]));
         void'(uvm_config_db#(bit)::get(uvm_root::get(), "uart", "parity_enable", apb_item.data[0]));
-        void'(uvm_config_db#(bit)::get(uvm_root::get(), "uart", "second_stop_bit", apb_item.data[2]));
+        void'(uvm_config_db#(bit)::get(
+            uvm_root::get(), "uart", "second_stop_bit", apb_item.data[2]
+        ));
       end else if (apb_item.tx_type == 1 && apb_item.addr == 'h14) begin
         byte data;
         wait (uart_tx_q.size());
@@ -74,7 +78,10 @@ class apb_uart_scbd extends uvm_scoreboard;
         end
       end else if (apb_item.tx_type == 0 && apb_item.addr == 'h18) begin
         byte data;
+        $display("################ %s:%0d", `__FILE__, `__LINE__);
+        $display("################ Waiting for RX data... : %0d", uart_rx_q.size());
         wait (uart_rx_q.size());
+        $display("################ %s:%0d", `__FILE__, `__LINE__);
         data = uart_rx_q.pop_front();
         if (data == apb_item.data[7:0]) begin
           pass_count++;

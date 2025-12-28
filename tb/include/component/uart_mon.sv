@@ -39,20 +39,24 @@ class uart_mon extends uvm_monitor;
     uart_rsp_item rsp_rx;
     fork
       forever begin
+        `uvm_info(get_type_name(), "UART Monitor waiting for TX data...", UVM_DEBUG)
         rsp_tx = uart_rsp_item::type_id::create("rsp_tx");
         @(negedge vif.tx);
         set_config();
         vif.recv_tx(rsp_tx.data);
         rsp_tx.direction = 1;
         ap.write(rsp_tx);
+        `uvm_info(get_type_name(), $sformatf("UART TX Data Received: 0x%0h", rsp_tx.data), UVM_DEBUG)
       end
       forever begin
+        `uvm_info(get_type_name(), "UART Monitor waiting for RX data...", UVM_DEBUG)
         rsp_rx = uart_rsp_item::type_id::create("rsp_rx");
         @(negedge vif.rx);
         set_config();
         vif.recv_rx(rsp_rx.data);
         rsp_rx.direction = 0;
         ap.write(rsp_rx);
+        `uvm_info(get_type_name(), $sformatf("UART RX Data Received: 0x%0h", rsp_rx.data), UVM_DEBUG)
       end
     join
   endtask
